@@ -1,0 +1,75 @@
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+<EditForm Model="@models" OnValidSubmit="@OnValidSubmitAsync">
+    <DataAnnotationsValidator/>
+
+    <div class="mb">
+    <InputNumber @bind-Value="models.Height" class="form-input" type="number" step="0.01" placeholder="Altura"/>
+    <span class="form-input-invalid">
+    <ValidationMessage For="@(()=> models.Height)"/>
+    </span>
+    </div>
+
+     <div class="mb">
+    <InputNumber @bind-Value="models.Weight" class="form-input" type="number" step="0.1" placeholder="Peso"/>
+    <span class="form-input-invalid">
+    <ValidationMessage For="@(()=> models.Weight)"/>
+    </span>
+    </div>
+    
+    <div class="flex flex-center">
+    <button type="submit" class="btn btn-filled btn-auto mb">
+        Calcular meu IMC
+    </button>
+    <a class="btn btn-link" href="#about">
+    Entenda o cálculo
+    </a>
+    
+    </div>
+
+</EditForm>
+
+<Dialog @ref="dialog" OnClose="@OnModalClose">
+    @if(models.Imc <18.6){
+        <h1>Abaixo do Peso ⚠️</h1>
+        <p>Você esta abaixo do peso indicado</p>
+    }
+    else if(models.Imc >=18.6 && models.Imc <24.9){
+        <h1>Peso Ideal 🎉</h1>
+        <p>Parabéns! Você esta no peso ideal</p>
+    }
+    else if(models.Imc >=24.9 && models.Imc <29.9){
+        <h1>Sobrepeso ⚠️</h1>
+        <p>Você esta com sobrepeso</p>
+    }
+    else if(models.Imc >=29.9 && models.Imc <34.9){
+        <h1>Obesidade Grau I ⚠️</h1>
+        <p>Você esta com obesidade grau I</p>
+    }
+    else if(models.Imc >=34.9 && models.Imc <39.9){
+        <h1>Obesidade Grau II ⚠️</h1>
+        <p>Você esta com obesidade grau II</p>
+    }
+    else if(models.Imc >=40){
+        <h1>Obesidade Grau III ⚠️</h1>
+        <p>Você esta com obesidade grau III</p>
+    }
+</Dialog>
+
+@code{
+    private Dialog dialog = null!;
+    private ImcModel models = new();
+
+    public async Task OnValidSubmitAsync(){
+        await ShowModalAsync();
+    }
+
+    private Task ShowModalAsync() => dialog.ShowModalAsync();
+
+    private async Task OnModalClose(){
+        AppState.History.Add(models);
+        await LocalStorage.SetItemAsync("data", AppState.History);
+        AppState.NotifyChanged(models, null);
+        models=new();
+    }
+}

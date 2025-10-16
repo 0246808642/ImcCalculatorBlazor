@@ -1,0 +1,32 @@
+.dialog{
+    border: none;
+    background-color: transparent;
+    width: 90%;
+    animation: opacity 1s;
+}
+
+.dialog-content{
+    border-radius: 16px;
+    width: 320px;
+    height: 320px;
+    background-color: #FFFFFFFF;
+    margin: auto;
+    text-align: center;
+}
+
+.dialog-content p{
+    font-size: 18px;
+}
+.dialog-buttons{
+    width: 100%;
+}
+
+::backdrop{
+    background-color: #2E1462;
+    animation: opacity .5s;
+}
+
+@keyframes opacity{
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
